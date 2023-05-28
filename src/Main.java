@@ -17,13 +17,13 @@ public class Main {
         clientes.add(new Cliente(1, 34345412));
         clientes.get(1).Persona("Ana", "1530298080", "Mitre 848");
 
-        Tienda lomas = new Tienda(305494939);
-        lomas.Persona("Lomas de Zamora", "42928648", "oliden 846");
+        Tienda lomas = new Tienda("3054949396");
+        lomas.Persona("The Old Crew", "42928648", "oliden 846");
         lomas.imprimirPersona();
-
-        FormaDePago efectivo = new FormaDePago(1, "efectivo");
-        FormaDePago debito = new FormaDePago(1, "debito");
-        FormaDePago credito = new FormaDePago(1, "credito");
+        ArrayList<FormaDePago> formaDePago = new ArrayList<FormaDePago>();
+        formaDePago.add(new FormaDePago(0, "efectivo"));
+        formaDePago.add(new FormaDePago(1, "debito"));
+        formaDePago.add(new FormaDePago(2, "credito"));
 
         ArrayList<Producto> productos = new ArrayList<Producto>();
 
@@ -45,7 +45,7 @@ public class Main {
 
 
 
-        ListaDePrecios listaPrecios23 = new ListaDePrecios("2023-01-01", "2023-12-31");
+        ListaDePrecios listaPrecios23 = new ListaDePrecios("2023/01/01", "2023/12731");
 
         listaPrecios23.asociarPrecio(0, 10);
 
@@ -89,19 +89,19 @@ public class Main {
 
         ArrayList<Factura> facturas = new ArrayList<Factura>();
 
-        facturas.add(new Factura("2023-04-03", 0, 1, 1));
+        facturas.add(new Factura("2023/04/03", 0, 1, 1,0));
         facturas.get(0).agregarDetalle(1, 15.5f, 2);
         facturas.get(0).agregarDetalle(2, 15.5f, 2);
 
 
-        facturas.add(new Factura("2023-08-07", 0, 1, 2));
+        facturas.add(new Factura("2023/01/07", 0, 1, 2,1));
         facturas.get(1).agregarDetalle(3, 8.4f, 3);
         facturas.get(1).agregarDetalle(4, 8.4f, 4);
         facturas.get(1).mostrarDetalle();
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Login login = new Login(empleados.get(0),clientes, productos, listaPrecios23,facturas,inventario);
+                Login login = new Login(empleados.get(0),clientes, productos, listaPrecios23,facturas,inventario,formaDePago,lomas);
                 login.setSize(300,300);
                 login.setVisible(true);
 

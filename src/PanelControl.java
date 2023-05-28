@@ -8,8 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+
 public class PanelControl extends JFrame{
     private JButton clientesButton;
     private JButton reportesButton;
@@ -39,16 +41,28 @@ public class PanelControl extends JFrame{
     private JTextField txtPrePro;
     private JButton agregarProButton1;
     private JButton editarButton1;
+    private JComboBox cmbFormaPago;
+    private JSpinner spinnerRepo;
+    private JSpinner spinnerRepoHasta;
+    private JTable tableRepo;
+    private JButton buscarButton;
+    private JButton verFacturaButton;
 
     public PanelControl(ArrayList<Cliente> clientes, ArrayList<Producto> producto, ListaDePrecios lista, ArrayList<Factura> factura,
-                        Inventario inventario) {
+                        Inventario inventario,ArrayList<FormaDePago>formaDePago,Tienda tienda)  {
         super("TPV-Grupo S");
         setContentPane(jpanel3);
-        SpinnerDateModel dateModel = new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH);
-        spinner1.setModel(dateModel);
+
+        spinner1.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH));
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(spinner1, "dd/MM/yyyy");
         spinner1.setEditor(dateEditor);
         spinner1.setValue(new Date());
+
+        spinnerRepo.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH));
+        spinnerRepo.setEditor(new JSpinner.DateEditor(spinnerRepo, "dd/MM/yyyy"));
+        spinnerRepoHasta.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH));
+        spinnerRepoHasta.setEditor(new JSpinner.DateEditor(spinnerRepoHasta, "dd/MM/yyyy"));
+
 
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Codigo");
@@ -81,6 +95,22 @@ public class PanelControl extends JFrame{
                 return false;
             }
         });
+
+        DefaultTableModel modelRepo = new DefaultTableModel();
+        modelRepo.addColumn("Fecha");
+        modelRepo.addColumn("Punto de Venta");
+        modelRepo.addColumn("Numero Factura");
+        modelRepo.addColumn("Cod. Cliente");
+        modelRepo.addColumn("Numero Cliente");
+        modelRepo.addColumn("Dni Cliente");
+        modelRepo.addColumn("Total");
+        modelRepo.addColumn("Forma de Pago");
+        tableRepo.setModel(modelRepo);
+        tableRepo.setDefaultEditor(Object.class, new DefaultCellEditor(new JTextField()) {
+            @Override
+            public boolean isCellEditable(java.util.EventObject e) {
+                return false;}
+        });
         DefaultTableModel modelPro = new DefaultTableModel();
         modelPro.addColumn("Codigo");
         modelPro.addColumn("Nombre");
@@ -93,58 +123,6 @@ public class PanelControl extends JFrame{
             @Override
             public boolean isCellEditable(java.util.EventObject e) {
                 return false;
-            }
-        });
-
-
-
-
-
-        agregarButton.addActionListener(new ActionListener() {
-            private boolean existeCodigo(int valor1) {
-                for (int row = 0; row < model.getRowCount(); row++) {
-                    int value1 = Integer.parseInt(model.getValueAt(row, 0).toString());
-                    if (value1 == valor1) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int codigo = comboBox1.getSelectedIndex();
-                if (existeCodigo(codigo)) {
-                    JOptionPane.showMessageDialog(null,
-                            "El articulo ya se ingresó");
-
-                    return;
-                }
-                String nombre = producto.get(codigo).getNombre();
-                String descripcion = producto.get(codigo).getDescripcion();
-                int cantidad = Integer.parseInt(textField3.getText());
-
-                if (inventario.obtenerCantidad(codigo) < cantidad) {
-                    JOptionPane.showMessageDialog(null,
-                            "La cantidad supera al inventario actual");
-
-                    return;
-                }
-                float precio = lista.obtenerPrecio(codigo);
-                model.addRow(new Object[]{codigo, nombre, descripcion, cantidad, precio, cantidad * precio});
-                actualizarTotal(model);
-
-
-            }
-
-        });
-
-        reportesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Reportes reporte = new Reportes(clientes, producto, lista, factura, inventario);
-                reporte.setSize(300, 300);
-                reporte.setVisible(true);
             }
         });
         table1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -161,7 +139,6 @@ public class PanelControl extends JFrame{
                 }
             }
         });
-
         aceptarButton.addActionListener(new ActionListener() {
             @Override
 
@@ -171,7 +148,7 @@ public class PanelControl extends JFrame{
                 int indice = factura.size();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 String fecha = dateFormat.format(spinner1.getValue());
-                factura.add(new Factura(fecha, comboBox2.getSelectedIndex(), 1, indice + 1));
+                factura.add(new Factura(fecha, comboBox2.getSelectedIndex(), 1, indice + 1,cmbFormaPago.getSelectedIndex()));
                 for (int row = 0; row < model.getRowCount(); row++) {
                     int codigo = Integer.parseInt(model.getValueAt(row, 0).toString());
                     float precio = Float.parseFloat(model.getValueAt(row, 4).toString());
@@ -189,6 +166,8 @@ public class PanelControl extends JFrame{
 
             }
         });
+
+
         editarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -271,8 +250,51 @@ public class PanelControl extends JFrame{
                 for (Producto elemento : producto) {
                     comboBox1.addItem(elemento.getCode()+"-"+elemento.getNombre());
                 }
+                cmbFormaPago.removeAllItems();;
+                for (FormaDePago forma:formaDePago){
+                    cmbFormaPago.addItem(forma.obtenerNombre());
+                }
 
             }
+        });
+        agregarButton.addActionListener(new ActionListener() {
+            private boolean existeCodigo(int valor1) {
+                for (int row = 0; row < model.getRowCount(); row++) {
+                    int value1 = Integer.parseInt(model.getValueAt(row, 0).toString());
+                    if (value1 == valor1) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int codigo = comboBox1.getSelectedIndex();
+                if (existeCodigo(codigo)) {
+                    JOptionPane.showMessageDialog(null,
+                            "El articulo ya se ingresó");
+
+                    return;
+                }
+                String nombre = producto.get(codigo).getNombre();
+                String descripcion = producto.get(codigo).getDescripcion();
+                int cantidad = Integer.parseInt(textField3.getText());
+
+                if (inventario.obtenerCantidad(codigo) < cantidad) {
+                    JOptionPane.showMessageDialog(null,
+                            "La cantidad supera al inventario actual");
+
+                    return;
+                }
+                float precio = lista.obtenerPrecio(codigo);
+                model.addRow(new Object[]{codigo, nombre, descripcion, cantidad, precio, cantidad * precio});
+                actualizarTotal(model);
+
+
+            }
+
         });
         agregarProButton1.addActionListener(new ActionListener() {
             @Override
@@ -283,6 +305,8 @@ public class PanelControl extends JFrame{
                 lista.asociarPrecio(codigo,Float.parseFloat(txtPrePro.getText()));
                 JOptionPane.showMessageDialog(null,
                         "Producto Agregado");
+                modelPro.addRow(new Object[]{codigo,txtNomPro.getText(),txtDespro.getText(),txtCanPro.getText(),txtPrePro.getText() });
+
             }
         });
         tabbedPane1.addFocusListener(new FocusAdapter() {
@@ -340,6 +364,39 @@ public class PanelControl extends JFrame{
 
             }
         });
+        buscarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                modelRepo.setRowCount(0);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                String fechaInicio=dateFormat.format(spinnerRepo.getValue());
+                String fechaFin=dateFormat.format(spinnerRepoHasta.getValue());
+                obtenerDetallePorRangoFechas(fechaInicio,fechaFin,factura).forEach(elemento -> {
+                    String fecha=elemento.obtenerFecha();
+                    int puntoVenta=elemento.obtenerPuntoVenta();
+                    int NumeroFactura= elemento.obtenerNumeroFactura();
+                    int codCliente=elemento.getCodCliente();
+                    String nombreCliente=clientes.get(codCliente).getNombre();
+                    int dniCliente=clientes.get(codCliente).getDni();
+                    float Total=elemento.obtenerTotal();
+                    String metodoDePago=formaDePago.get(elemento.getCodFormaPago()).obtenerNombre();
+                    modelRepo.addRow(new Object[]{fecha,puntoVenta,NumeroFactura,codCliente,nombreCliente,dniCliente,Total,metodoDePago});
+                });
+            }
+        });
+
+        verFacturaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int fila = tableRepo.getSelectedRow();
+                int codigo = Integer.parseInt(modelRepo.getValueAt(fila, 2).toString())-1;
+                System.out.println(codigo);
+                FacturaPantalla facturaPantalla=new FacturaPantalla(factura.get(codigo),producto,tienda,clientes.get(factura.get(codigo).getCodCliente()));
+                facturaPantalla.setSize(800,800);
+                facturaPantalla.setVisible(true);
+            }
+        });
     };
 
         public void actualizarTotal(DefaultTableModel model) {
@@ -350,5 +407,18 @@ public class PanelControl extends JFrame{
                 total = total + (precio * cantidad);
             }
             cantTotal.setText(Float.toString(total));
+
         }
+    public ArrayList<Factura> obtenerDetallePorRangoFechas(String fechaInicio, String fechaFin,ArrayList<Factura> factura) {
+        ArrayList<Factura> detallePorRangoFechas = new ArrayList<>();
+
+        for (Factura elemento : factura) {
+            // Comparar si la fecha de la factura está dentro del rango
+            if (elemento.obtenerFecha().compareTo(fechaInicio) >=0  && elemento.obtenerFecha().compareTo(fechaFin) <= 0) {
+                detallePorRangoFechas.add(elemento);
+            }
+        }
+
+        return detallePorRangoFechas;
+    }
 }

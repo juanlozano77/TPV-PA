@@ -10,13 +10,13 @@ public class Reportes extends JFrame {
     private JButton imprimirInventarioButton;
 
     public Reportes(ArrayList<Cliente> clientes, ArrayList<Producto> producto, ListaDePrecios lista, ArrayList<Factura> factura,
-                    Inventario inventario) {
+                    Inventario inventario,ArrayList<FormaDePago> formaDePago) {
         super("Reportes");
         setContentPane(jpanel4);
         listarFacturasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ListarFactura listarFactura= new ListarFactura(factura,clientes);
+                ListarFactura listarFactura= new ListarFactura(factura,clientes,formaDePago);
                 listarFactura.setSize(800,300);
                 listarFactura.setVisible(true);
             }

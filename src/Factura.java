@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 class Factura {
+    private int codFormaPago;
     private String fecha;
     private int codCliente;
     private int puntoVenta;
@@ -8,18 +9,23 @@ class Factura {
     private float total;
     private List<DetalleFactura> detalle;
 
-    public Factura(String fecha, int codCliente, int puntoVenta, int nroFactura) {
+
+
+    public Factura(String fecha, int codCliente, int puntoVenta, int nroFactura, int idFormaPago) {
         this.fecha = fecha;
         this.codCliente = codCliente;
-        this.puntoVenta = puntoVenta;
-        this.nroFactura = nroFactura;
+        this.puntoVenta=puntoVenta;
+        this.nroFactura=nroFactura;
         this.detalle = new ArrayList<>();
+        this.codFormaPago=idFormaPago;
     }
 
     public String obtenerFecha() {
         return fecha;
     }
     public int getCodCliente(){return codCliente;}
+
+    public int getCodFormaPago(){return codFormaPago;}
 
     public int obtenerPuntoVenta() {
         return puntoVenta;
@@ -33,6 +39,13 @@ class Factura {
         DetalleFactura detalleFactura = new DetalleFactura(codigoProducto, precio, cantidad);
         detalle.add(detalleFactura);
     }
+    public List<DetalleFactura> obtenerDetalle(){
+        return detalle;
+    }
+
+
+
+
 
     public void mostrarDetalle() {
         System.out.println("Detalle de la factura:");

@@ -10,8 +10,10 @@ public class Login extends JFrame {
     private JButton button2;
 
     public Login(Empleado empleado, ArrayList<Cliente> clientes, ArrayList<Producto> producto, ListaDePrecios lista, ArrayList<Factura>factura,
-                 Inventario inventario){
+                 Inventario inventario,ArrayList<FormaDePago> formaDePago,Tienda tienda){
+        super("TPV-Programacion Avanzada-Login");
         setContentPane(panel1);
+
 
 
         button2.addActionListener(new ActionListener() {
@@ -22,7 +24,7 @@ public class Login extends JFrame {
                     JOptionPane.showMessageDialog(null,
                             "Credenciales correctas");
                     Login.super.setVisible(false);
-                    PanelControl panel= new PanelControl(clientes, producto, lista,factura,inventario);
+                    PanelControl panel= new PanelControl(clientes, producto, lista,factura,inventario,formaDePago,tienda);
                     panel.setSize(800,800);
                     panel.setVisible(true);
 

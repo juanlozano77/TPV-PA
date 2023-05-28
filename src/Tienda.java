@@ -1,13 +1,13 @@
 public class Tienda extends Persona {
-    private long cuit;
-    public void setCuit(long cuit) {
+    private String cuit;
+    public void setCuit(String cuit) {
         this.cuit = cuit;
     }
 
-    public long getCuit() {
+    public String getCuit() {
         return cuit;
     }
-    public Tienda(long cuit) {
+    public Tienda(String cuit) {
         this.cuit = cuit;
 
     }

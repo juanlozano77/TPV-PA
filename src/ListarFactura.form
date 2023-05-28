@@ -40,7 +40,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="84495" class="javax.swing.JSpinner" binding="spinner1" default-binding="true">
+      <component id="84495" class="javax.swing.JSpinner" binding="spinnerList">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
