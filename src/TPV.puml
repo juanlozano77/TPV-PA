@@ -60,7 +60,7 @@ class Producto {
 + void imprimirInformacion()
 }
 
-class Persona {
+abstract class Persona {
 - String nombre
 - String telefono
 - String direccion

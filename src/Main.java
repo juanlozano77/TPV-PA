@@ -10,6 +10,8 @@ public class Main {
         empleados.add(new Empleado("admin", "1234"));
         empleados.get(0).Persona("Juan Perez", "4298-0549", "Saavedra 459");
         empleados.get(0).imprimirPersona();
+        //Persona pedro=new Persona("Juan Perez", "4298-0549", "Saavedra 459"); clase abstracta no puede ser instnaciada
+
 
         ArrayList<Cliente> clientes = new ArrayList<Cliente>();
         clientes.add(new Cliente(0, 28555315));
