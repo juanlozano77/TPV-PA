@@ -163,6 +163,9 @@ public class PanelControl extends JFrame{
                 model.setRowCount(0);
                 JOptionPane.showMessageDialog(null,
                         "Factura Creada");
+                FacturaPantalla facturaPantalla=new FacturaPantalla(factura.get(indice),producto,tienda,clientes.get(factura.get(indice).getCodCliente()));
+                facturaPantalla.setSize(800,800);
+                facturaPantalla.setVisible(true);
 
             }
         });

@@ -1,0 +1,130 @@
+@startuml
+class Empleado {
+- String usuario
+- String pass
++ void setUsuario(String)
++ String getUsuario()
++ String getPass()
++ void setPass(String)
+}
+
+class Cliente {
+- int code
+- int dni
++ void setCode(int)
++ void setDni(int)
++ int getCode()
++ int getDni()
+}
+
+class TPV {
++ void reimprimirFacturaButton
++ void listarFacturasButton
++ void imprimirInventarioButton
++ void obtenerDetallePorRangoFechas(String,String,ArrayList<Factura>)
+
+}
+
+class ListaDePrecios {
+- Map<Integer,Float> precios
+- String fechaInicio
+- String fechaFin
++ void asociarPrecio(int,float)
++ float obtenerPrecio(int)
++ String obtenerFechaInicio()
++ String obtenerFechaFin()
++ void listarPrecios()
+}
+
+class DetalleFactura {
+- int codigoProducto
+- float precio
+- int cantidad
++ int getCodigoProducto()
++ void setCodigoProducto(int)
++ float getPrecio()
++ void setPrecio(float)
++ int getCantidad()
++ void setCantidad(int)
+}
+
+class Producto {
+- int id
+- String nombre
+- String descripcion
++ String getNombre()
++ int getCode()
++ void setNombre(String)
++ void setDescripcion(String)
++ String getDescripcion()
++ void imprimirInformacion()
+}
+
+class Persona {
+- String nombre
+- String telefono
+- String direccion
++ void Persona(String,String,String)
++ String getNombre()
++ String getTelefono()
++ String getDireccion()
++ void imprimirPersona()
+}
+class Inventario {
+-int codigoProduct
+-int cantidadStock
++ void actualizarProducto(int codigoProducto,int cantidadStock)
++ int obtenerCantidad(int)
++ void imprimirInventario()
+}
+class FormaDePago {
+- int id
+- String nombre
++ int obtenerId()
++ String obtenerNombre()
++ void setId(int)
++ void setNombre(String)
+}
+class Factura {
+- int codFormaPago
+- String fecha
+- int codCliente
+- int puntoVenta
+- int nroFactura
+- float total
+- List<DetalleFactura> detalle
++ String obtenerFecha()
++ int getCodCliente()
++ int getCodFormaPago()
++ int obtenerPuntoVenta()
++ int obtenerNumeroFactura()
++ void agregarDetalle(int,float,int)
++ List<DetalleFactura> obtenerDetalle()
++ void mostrarDetalle()
++ float obtenerTotal()
+}
+
+class Tienda {
+- String cuit
++ void setCuit(String)
++ String getCuit()
+}
+
+Persona <|-- Empleado
+Persona <|-- Cliente
+Persona <|-- Tienda
+
+Tienda "1" -- "1..*" Empleado : tiene
+Cliente "1" -- "1..*" Factura  : recibe
+Empleado"1" -- "1..*" TPV  : administra
+Factura "1" *-- "1..*" DetalleFactura: compuesto_por
+
+DetalleFactura "1" o-- "1..*" Producto: incluye
+Factura "1" -- "1..*" FormaDePago: admite
+ListaDePrecios "1" o-- "1..*" Producto: incluye
+Inventario "1" o-- "1..*" Producto : incluye
+TPV "1" -- "1..*" Factura : registra
+
+Tienda "1" -- "1..*" TPV : tiene_asociado
+Tienda "1" -- "1" Inventario : posee
+@enduml
